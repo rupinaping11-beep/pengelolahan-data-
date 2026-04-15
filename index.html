@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bangun Datar Kelas 3</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Nunito', sans-serif; }
+    .shape-card { transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+    .shape-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(236,72,153,0.2); }
+    .shape-visual { animation: shapeFloat 4s ease-in-out infinite; }
+    @keyframes shapeFloat { 0%,100%{ transform: translateY(0) rotate(0deg); } 50%{ transform: translateY(-15px) rotate(8deg); } }
+    .emoji-pulse { animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.15); } }
+    .fade-in { animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(15px); } to { opacity:1; transform: translateY(0); } }
+    .slide-left { animation: slideLeft 0.4s ease; }
+    @keyframes slideLeft { from { opacity:0; transform: translateX(-30px); } to { opacity:1; transform: translateX(0); } }
+    .pop-scale { animation: popScale 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes popScale { from { transform: scale(0.3); opacity:0; } to { transform: scale(1); opacity:1; } }
+    .bg-gradient {
+      background: linear-gradient(135deg, #fef3f2 0%, #fffbeb 50%, #f0fdf4 100%);
+    }
+    .stat-glow { box-shadow: 0 8px 25px rgba(236,72,153,0.1); }
+    .quiz-bounce { animation: bounce 0.8s ease-in-out infinite; }
+    @keyframes bounce { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-10px); } }
+    input:focus, select:focus { outline: none; box-shadow: 0 0 0 3px rgba(236,72,153,0.2); }
+    .toast { animation: toastIn 0.3s ease, toastOut 0.3s ease 2.5s forwards; }
+    @keyframes toastIn { from { transform: translateY(20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+    @keyframes toastOut { from { opacity:1; } to { opacity:0; } }
+    .tab-active { border-bottom: 3px solid #ec4899; }
+    .shape-emoji { font-size: 3.5rem; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto bg-gradient"><!-- Header -->
+   <header class="sticky top-0 z-30 shadow-lg" style="background: linear-gradient(135deg, #ec4899 0%, #f97316 50%, #eab308 100%);">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+     <div class="flex items-center gap-3"><span class="text-4xl shape-visual">📐</span>
+      <div>
+       <h1 id="main-title" class="text-white font-black text-2xl md:text-3xl tracking-tight">Belajar Bangun Datar</h1>
+       <p id="main-subtitle" class="text-pink-100 text-xs md:text-sm font-semibold">Matematika Kelas 3 SD 🌟</p>
+      </div>
+     </div>
+     <div class="flex gap-2 flex-wrap justify-end"><button onclick="switchTab('explore')" class="px-3 md:px-4 py-2 rounded-xl font-bold text-sm transition-all tab-btn" id="explore-btn" style="background-color:#ffffff; color:#ec4899;">🔍 Jelajahi</button> <button onclick="switchTab('quiz')" class="px-3 md:px-4 py-2 rounded-xl font-bold text-sm transition-all tab-btn hidden md:inline-block" id="quiz-btn" style="background-color:#fef3f2; color:#ec4899;">🎮 Quiz</button> <button onclick="switchTab('tracker')" class="px-3 md:px-4 py-2 rounded-xl font-bold text-sm transition-all tab-btn" id="tracker-btn" style="background-color:#fef3f2; color:#ec4899;">📊 Progres</button>
+     </div>
+    </div>
+   </header><!-- Stats Bar -->
+   <div class="max-w-6xl mx-auto px-4 py-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+     <div class="pop-scale rounded-2xl p-3 md:p-4 text-center shadow-md stat-glow" style="background-color:#fef3f2; border: 2px solid #fecdd3;">
+      <div class="text-2xl md:text-3xl mb-1">
+       📚
+      </div>
+      <div id="stat-total" class="text-xl md:text-2xl font-black" style="color:#ec4899;">
+       0
+      </div>
+      <div class="text-xs md:text-sm font-semibold" style="color:#92400e;">
+       Dipelajari
+      </div>
+     </div>
+     <div class="pop-scale rounded-2xl p-3 md:p-4 text-center shadow-md stat-glow" style="background-color:#fef3f2; border: 2px solid #fed7aa;">
+      <div class="text-2xl md:text-3xl mb-1">
+       ⭐
+      </div>
+      <div id="stat-points" class="text-xl md:text-2xl font-black" style="color:#f97316;">
+       0
+      </div>
+      <div class="text-xs md:text-sm font-semibold" style="color:#92400e;">
+       Poin
+      </div>
+     </div>
+     <div class="pop-scale rounded-2xl p-3 md:p-4 text-center shadow-md stat-glow" style="background-color:#fef3f2; border: 2px solid #d1fae5;">
+      <div class="text-2xl md:text-3xl mb-1">
+       ⏱️
+      </div>
+      <div id="stat-time" class="text-xl md:text-2xl font-black" style="color:#10b981;">
+       0h
+      </div>
+      <div class="text-xs md:text-sm font-semibold" style="color:#92400e;">
+       Waktu
+      </div>
+     </div>
+     <div class="pop-scale rounded-2xl p-3 md:p-4 text-center shadow-md stat-glow" style="background-color:#fef3f2; border: 2px solid #fef08a;">
+      <div class="text-2xl md:text-3xl mb-1">
+       🏆
+      </div>
+      <div id="stat-level" class="text-xl md:text-2xl font-black" style="color:#eab308;">
+       Pemula
+      </div>
+      <div class="text-xs md:text-sm font-semibold" style="color:#92400e;">
+       Level
+      </div>
+     </div>
+    </div>
+   </div><!-- Content Tabs -->
+   <div id="content" class="max-w-6xl mx-auto px-4 pb-8"><!-- Explore Tab -->
+    <div id="explore-tab" class="slide-left">
+     <div id="empty-shapes" class="text-center py-12">
+      <div class="text-6xl mb-4 animate-bounce">
+       📦
+      </div>
+      <h3 class="text-lg font-bold mb-2" style="color:#ec4899;">Belum Ada Bangun Datar</h3>
+      <p class="text-sm" style="color:#94a3b8;">Klik tombol di bawah untuk mulai belajar! 👇</p>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6" id="shapes-grid"></div>
+    </div><!-- Quiz Tab -->
+    <div id="quiz-tab" class="hidden slide-left">
+     <div id="quiz-container" class="text-center py-12">
+      <div class="text-6xl mb-4 quiz-bounce">
+       🎮
+      </div>
+      <h3 class="text-lg font-bold mb-2" style="color:#ec4899;">Siap Belajar Lebih Dalam?</h3>
+      <p class="text-sm mb-6" style="color:#94a3b8;">Klik "Tambah Bangun" untuk menambahkan data bangun datar terlebih dahulu!</p>
+     </div>
+    </div><!-- Tracker Tab -->
+    <div id="tracker-tab" class="hidden slide-left">
+     <div class="rounded-2xl p-6 text-center" style="background-color:#ffffff; border: 2px solid #fce7f3;">
+      <div class="text-5xl mb-4">
+       📊
+      </div>
+      <h3 class="text-lg font-bold mb-2" style="color:#ec4899;">Progres Belajarmu</h3>
+      <p id="tracker-info" class="text-sm" style="color:#94a3b8;">Mulai belajar bangun datar untuk melihat progres!</p>
+      <div id="tracker-details" class="mt-6 space-y-3"></div>
+     </div>
+    </div>
+   </div><!-- Add Button -->
+   <div class="fixed bottom-6 right-6 z-40"><button onclick="openForm()" class="w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-2xl transition-all hover:scale-110 quiz-bounce" style="background: linear-gradient(135deg, #ec4899, #f97316);">➕</button>
+   </div><!-- Modal Form -->
+   <div id="modal-overlay" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.5);">
+    <div class="rounded-3xl shadow-2xl w-full max-w-md max-h-[90%] overflow-auto fade-in" style="background-color:#ffffff;">
+     <div class="p-5">
+      <div class="flex items-center justify-between mb-4">
+       <h2 id="form-title" class="text-lg font-black flex items-center gap-2" style="color:#ec4899;"><span class="text-2xl">✏️</span> Tambah Bangun</h2><button onclick="closeForm()" class="rounded-full p-1 hover:bg-gray-100"><i data-lucide="x" style="width:20px;height:20px;color:#94a3b8;"></i></button>
+      </div>
+      <form id="shape-form" onsubmit="handleSubmit(event)" class="space-y-3">
+       <div>
+        <label class="block text-sm font-bold mb-1" style="color:#475569;">📛 Nama Bangun</label> <input id="f-nama" type="text" required placeholder="Contoh: Segitiga, Persegi..." class="w-full rounded-xl border-2 px-3 py-2 text-sm font-semibold" style="border-color:#e2e8f0;">
+       </div>
+       <div class="grid grid-cols-2 gap-2">
+        <div>
+         <label class="block text-sm font-bold mb-1" style="color:#475569;">➖ Jumlah Sisi</label> <input id="f-sisi" type="number" min="1" max="10" required placeholder="3" class="w-full rounded-xl border-2 px-3 py-2 text-sm font-semibold text-center" style="border-color:#e2e8f0;">
+        </div>
+        <div>
+         <label class="block text-sm font-bold mb-1" style="color:#475569;">🔺 Jumlah Sudut</label> <input id="f-sudut" type="number" min="1" max="10" required placeholder="3" class="w-full rounded-xl border-2 px-3 py-2 text-sm font-semibold text-center" style="border-color:#e2e8f0;">
+        </div>
+       </div>
+       <div>
+        <label class="block text-sm font-bold mb-1" style="color:#475569;">💭 Ciri-ciri</label> <textarea id="f-ciri" required placeholder="Contoh: Memiliki 3 sisi dan 3 sudut..." class="w-full rounded-xl border-2 px-3 py-2 text-sm font-semibold h-16 resize-none" style="border-color:#e2e8f0;"></textarea>
+       </div>
+       <div>
+        <label class="block text-sm font-bold mb-1" style="color:#475569;">🏠 Contoh Benda</label> <input id="f-contoh" type="text" required placeholder="Contoh: Atap rumah, rambu lalu lintas..." class="w-full rounded-xl border-2 px-3 py-2 text-sm font-semibold" style="border-color:#e2e8f0;">
+       </div><button id="submit-btn" type="submit" class="w-full py-3 rounded-xl text-white font-black text-sm transition-all hover:scale-[1.02]" style="background: linear-gradient(135deg, #ec4899, #f97316);"> 💾 Simpan </button>
+      </form>
+     </div>
+    </div>
+   </div><!-- Delete Confirm -->
+   <div id="delete-confirm" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.5);">
+    <div class="rounded-3xl shadow-2xl p-6 text-center max-w-sm w-full fade-in" style="background-color:#ffffff;">
+     <div class="text-5xl mb-3">
+      🗑️
+     </div>
+     <h3 class="font-black text-lg mb-1" style="color:#ef4444;">Hapus Bangun?</h3>
+     <p id="delete-name" class="text-sm font-semibold mb-4" style="color:#94a3b8;"></p>
+     <div class="flex gap-2"><button onclick="cancelDelete()" class="flex-1 py-2 rounded-xl font-bold text-sm" style="background-color:#f1f5f9; color:#475569;">Batal</button> <button id="confirm-del-btn" onclick="confirmDelete()" class="flex-1 py-2 rounded-xl font-bold text-sm text-white" style="background-color:#ef4444;">Hapus</button>
+     </div>
+    </div>
+   </div><!-- Toast -->
+   <div id="toast-container" class="fixed bottom-24 md:bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+  </div>
+  <script>
+  const SHAPE_EMOJIS = {
+    'Segitiga': '🔺', 'Persegi': '⬜', 'Persegi Panjang': '▭', 'Lingkaran': '⭕',
+    'Trapesium': '📦', 'Jajar Genjang': '▀', 'Belah Ketupat': '◇', 'Layang-layang': '🪁'
+  };
+
+  let allShapes = [];
+  let editingRecord = null;
+  let deletingRecord = null;
+  let currentTab = 'explore';
+  let currentRecordCount = 0;
+
+  const defaultConfig = {
+    app_title: 'Belajar Bangun Datar',
+    subtitle: 'Matematika Kelas 3 SD',
+    background_color: '#fef3f2',
+    surface_color: '#ffffff',
+    text_color: '#334155',
+    primary_color: '#ec4899',
+    accent_color: '#f97316'
+  };
+
+  // Element SDK
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => {
+      const title = config.app_title || defaultConfig.app_title;
+      const sub = config.subtitle || defaultConfig.subtitle;
+      const font = config.font_family || 'Nunito';
+      const baseSize = config.font_size || 16;
+
+      document.getElementById('main-title').textContent = title;
+      document.getElementById('main-title').style.fontSize = `${baseSize * 1.5}px`;
+      document.getElementById('main-subtitle').textContent = sub;
+      document.body.style.fontFamily = `${font}, Nunito, sans-serif`;
+      
+      renderShapes();
+    },
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        { get: () => config.primary_color || defaultConfig.primary_color, set: v => { config.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); }},
+        { get: () => config.accent_color || defaultConfig.accent_color, set: v => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); }},
+      ],
+      borderables: [],
+      fontEditable: { get: () => config.font_family || 'Nunito', set: v => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }},
+      fontSizeable: { get: () => config.font_size || 16, set: v => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }}
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['app_title', config.app_title || defaultConfig.app_title],
+      ['subtitle', config.subtitle || defaultConfig.subtitle]
+    ])
+  });
+
+  // Data SDK
+  const dataHandler = {
+    onDataChanged(data) {
+      allShapes = data;
+      currentRecordCount = data.length;
+      updateStats();
+      renderShapes();
+    }
+  };
+  window.dataSdk.init(dataHandler);
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('explore-tab').classList.add('hidden');
+    document.getElementById('quiz-tab').classList.add('hidden');
+    document.getElementById('tracker-tab').classList.add('hidden');
+    document.getElementById(tab + '-tab').classList.remove('hidden');
+    
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
+    document.getElementById(tab + '-btn').classList.add('tab-active');
+
+    if (tab === 'tracker') updateTrackerView();
+  }
+
+  function updateStats() {
+    const totalPoints = allShapes.reduce((sum, s) => sum + (s.poin || 10), 0);
+    const totalTime = allShapes.reduce((sum, s) => sum + (s.waktu_belajar || 0), 0);
+    const level = totalPoints >= 500 ? '🌟 Ahli' : totalPoints >= 300 ? '💪 Menengah' : '👶 Pemula';
+
+    document.getElementById('stat-total').textContent = allShapes.length;
+    document.getElementById('stat-points').textContent = totalPoints;
+    document.getElementById('stat-time').textContent = Math.floor(totalTime / 60) + 'h';
+    document.getElementById('stat-level').textContent = level;
+  }
+
+  function renderShapes() {
+    const grid = document.getElementById('shapes-grid');
+    const empty = document.getElementById('empty-shapes');
+    empty.classList.toggle('hidden', allShapes.length > 0);
+
+    const existingMap = new Map([...grid.children].map(el => [el.dataset.id, el]));
+    const newIds = new Set(allShapes.map(s => s.__backendId));
+
+    existingMap.forEach((el, id) => { if (!newIds.has(id)) el.remove(); });
+
+    allShapes.forEach((shape, i) => {
+      const id = shape.__backendId;
+      let card = existingMap.get(id);
+      if (!card) {
+        card = document.createElement('div');
+        card.dataset.id = id;
+        card.className = 'shape-card rounded-2xl shadow-md p-4 fade-in';
+        card.style.backgroundColor = '#ffffff';
+        card.style.border = '2px solid #fce7f3';
+        grid.appendChild(card);
+      }
+      
+      const emoji = SHAPE_EMOJIS[shape.nama_bangun] || '📐';
+      card.innerHTML = `
+        <div class="text-center">
+          <div class="text-4xl mb-2 emoji-pulse" style="animation-delay:${i * 0.1}s">${emoji}</div>
+          <h3 class="font-black text-base mb-1" style="color:#ec4899;">${shape.nama_bangun}</h3>
+          <div class="flex gap-2 justify-center text-xs font-bold mb-2 flex-wrap">
+            <span class="px-2 py-1 rounded-lg" style="background-color:#fef3f2; color:#ec4899;">➖ ${shape.jumlah_sisi} Sisi</span>
+            <span class="px-2 py-1 rounded-lg" style="background-color:#fed7aa; color:#f97316;">🔺 ${shape.jumlah_sudut} Sudut</span>
+          </div>
+          <p class="text-xs font-semibold mb-3" style="color:#94a3b8; min-h:40px;">${shape.ciri_ciri}</p>
+          <div class="text-xs font-bold mb-3 p-2 rounded-lg" style="background-color:#fef3f2; color:#ec4899;">🏠 ${shape.contoh_benda}</div>
+          <div class="flex gap-2 justify-center">
+            <button onclick="editShape('${id}')" class="p-2 rounded-lg hover:bg-pink-100 transition"><i data-lucide="edit-3" style="width:16px;height:16px;color:#ec4899;"></i></button>
+            <button onclick="askDelete('${id}')" class="p-2 rounded-lg hover:bg-red-100 transition"><i data-lucide="trash-2" style="width:16px;height:16px;color:#ef4444;"></i></button>
+          </div>
+        </div>`;
+    });
+    lucide.createIcons();
+  }
+
+  function updateTrackerView() {
+    const details = document.getElementById('tracker-details');
+    if (allShapes.length === 0) {
+      document.getElementById('tracker-info').textContent = 'Belum ada data. Mulai dengan menambahkan bangun datar!';
+      details.innerHTML = '';
+      return;
+    }
+    document.getElementById('tracker-info').textContent = `Kamu telah mempelajari ${allShapes.length} bangun datar! 🎉`;
+    details.innerHTML = allShapes.map(s => `
+      <div class="text-left p-3 rounded-xl" style="background-color:#fef3f2; border: 1px solid #fce7f3;">
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="font-black text-base" style="color:#ec4899;">${SHAPE_EMOJIS[s.nama_bangun] || '📐'} ${s.nama_bangun}</h4>
+            <p class="text-xs" style="color:#94a3b8;">⭐ ${s.poin || 10} poin • ⏱️ ${s.waktu_belajar || 0} menit</p>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openForm(record) {
+    editingRecord = record || null;
+    document.getElementById('form-title').innerHTML = record ? '<span class="text-2xl">✏️</span> Edit Bangun' : '<span class="text-2xl">✏️</span> Tambah Bangun';
+    document.getElementById('submit-btn').textContent = record ? '💾 Perbarui' : '💾 Simpan';
+    document.getElementById('f-nama').value = record ? record.nama_bangun : '';
+    document.getElementById('f-sisi').value = record ? record.jumlah_sisi : '';
+    document.getElementById('f-sudut').value = record ? record.jumlah_sudut : '';
+    document.getElementById('f-ciri').value = record ? record.ciri_ciri : '';
+    document.getElementById('f-contoh').value = record ? record.contoh_benda : '';
+    document.getElementById('modal-overlay').classList.remove('hidden');
+  }
+
+  function closeForm() {
+    document.getElementById('modal-overlay').classList.add('hidden');
+    editingRecord = null;
+  }
+
+  function editShape(id) {
+    const s = allShapes.find(x => x.__backendId === id);
+    if (s) openForm(s);
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Menyimpan...';
+
+    const data = {
+      nama_bangun: document.getElementById('f-nama').value.trim(),
+      jumlah_sisi: Number(document.getElementById('f-sisi').value),
+      jumlah_sudut: Number(document.getElementById('f-sudut').value),
+      ciri_ciri: document.getElementById('f-ciri').value.trim(),
+      contoh_benda: document.getElementById('f-contoh').value.trim(),
+      poin: 10,
+      waktu_belajar: 5
+    };
+
+    let result;
+    if (editingRecord) {
+      result = await window.dataSdk.update({ ...editingRecord, ...data });
+    } else {
+      if (currentRecordCount >= 999) {
+        showToast('⚠️ Batas 999 bangun tercapai!', '#ef4444');
+        btn.disabled = false;
+        btn.textContent = '💾 Simpan';
+        return;
+      }
+      result = await window.dataSdk.create(data);
+    }
+
+    btn.disabled = false;
+    btn.textContent = editingRecord ? '💾 Perbarui' : '💾 Simpan';
+
+    if (result.isOk) {
+      showToast(editingRecord ? '✅ Berhasil diperbarui!' : '✅ Bangun ditambahkan!', '#10b981');
+      closeForm();
+    } else {
+      showToast('❌ Gagal menyimpan', '#ef4444');
+    }
+  }
+
+  function askDelete(id) {
+    deletingRecord = allShapes.find(x => x.__backendId === id);
+    if (!deletingRecord) return;
+    document.getElementById('delete-name').textContent = `${SHAPE_EMOJIS[deletingRecord.nama_bangun] || '📐'} ${deletingRecord.nama_bangun}`;
+    document.getElementById('delete-confirm').classList.remove('hidden');
+  }
+
+  function cancelDelete() {
+    document.getElementById('delete-confirm').classList.add('hidden');
+    deletingRecord = null;
+  }
+
+  async function confirmDelete() {
+    if (!deletingRecord) return;
+    const btn = document.getElementById('confirm-del-btn');
+    btn.disabled = true;
+    btn.textContent = '⏳...';
+    const result = await window.dataSdk.delete(deletingRecord);
+    btn.disabled = false;
+    btn.textContent = 'Hapus';
+    document.getElementById('delete-confirm').classList.add('hidden');
+    if (result.isOk) showToast('🗑️ Berhasil dihapus', '#f59e0b');
+    else showToast('❌ Gagal menghapus', '#ef4444');
+    deletingRecord = null;
+  }
+
+  function showToast(msg, color) {
+    const t = document.createElement('div');
+    t.className = 'toast rounded-xl px-4 py-3 text-white text-sm font-bold shadow-lg';
+    t.style.backgroundColor = color;
+    t.textContent = msg;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  }
+
+  lucide.createIcons();
+  switchTab('explore');
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ec718fcd37aea76',t:'MTc3NjIxNTcxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
